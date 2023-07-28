@@ -8,7 +8,8 @@ uses
   Vcl.StdCtrls, Vcl.ComCtrls, Vcl.ExtCtrls, Vcl.Menus,frmhelpprompt_U,frmReports_U,
   IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient, IdHTTP,
   IdIOHandler, IdIOHandlerSocket, IdIOHandlerStack, IdSSL, IdSSLOpenSSL,
-  REST.Types, Data.Bind.Components, Data.Bind.ObjectScope, REST.Client,system.JSON;
+  REST.Types, Data.Bind.Components, Data.Bind.ObjectScope, REST.Client,system.JSON,
+  PythonEngine, Vcl.PythonGUIInputOutput,frmSettings_U,VarPyth,WrapDelphi;
 
 type
   Tfrmmain = class(TForm)
@@ -52,15 +53,17 @@ type
     Settings1: TMenuItem;
     Settings2: TMenuItem;
     btnhelp: TButton;
-    idhtp1: TIdHTTP;
-    idslhndlrscktpnsl1: TIdSSLIOHandlerSocketOpenSSL;
-    rstclnt1: TRESTClient;
+    pythngn1: TPythonEngine;
+    pythngnptpt1: TPythonGUIInputOutput;
+    pythndlphvr1: TPythonDelphiVar;
     procedure FormActivate(Sender: TObject);
     procedure btngetoffersClick(Sender: TObject);
     procedure btnhelpClick(Sender: TObject);
     procedure btnReportsClick(Sender: TObject);
+    procedure btnsettingsClick(Sender: TObject);
   private
     { Private declarations }
+
   public
     { Public declarations }
   end;
@@ -72,19 +75,9 @@ implementation
 
 {$R *.dfm}
 
-procedure AddReponse(Value:string);
-begin
- frmmain.mmostatus.Lines.Add(Value)
-end;
-
-
 procedure Tfrmmain.btngetoffersClick(Sender: TObject);
 var
-  RestClient: TRESTClient;
-  Request: TRESTRequest;
-  Response: TRESTResponse;
-  JsonRequest: TJSONObject;
-  JsonStrPart1, JsonStrPart2, JsonStrPart3,JsonStrPart4,JsonStrPart5: string;
+Python: Variant;
 begin
  // after getting the offers using python for delphi
  // we then write the offers returned to a textfile or a csv file
@@ -103,46 +96,9 @@ begin
  //cannot be won back due to margins
  // we can later add the ability to change seller price through API request
  //
- RestClient := TRESTClient.Create('https://seller-api.takealot.com');
-  Request := TRESTRequest.Create(nil);
-  Response := TRESTResponse.Create(nil);
 
-  try
-    // Split the JSON request into five parts
-    JsonStrPart1 :=
-      '{"requests":[{"options":{"headers":[{"value":"Key 29b73089f8ca235177c714de2e10c92a993cf64dc6e237844c602c4b297654e65f5e2857d40bab62d2113b77e9d09a6';
-    JsonStrPart2 :=
-      '98747ba7b3cd26701429026a38d01ddaf","key":"Authorization"}],"reportStyle":"separate-columns","insertRequestURL":0,"insertTimestampEach';
-    JsonStrPart3 :=
-      'Line":0,"insertTimestamp":0,"name":"Offers 1 ","jmesPath":"","url":"https://seller-api.takealot.com/v2/offers?page_number=1&page_size=2000","outputTypeMergeKey":null,"removeHeaderRow":0,"reportStyleUnwind":0,"oauthService":"none","flattenFieldToHeaderValue":"","id":"1687869731526","truncateHeaders":0,"noDataClearSheet":0,"destinationStartingCell":"A1","insertRequestURLEachLine":0,"flattenFieldToHeader":"none","postBody":"","outputType":"overwrite","api":"custom","methodType":"GET","multiplePostBodies":0,"pagination":{"mode":"none"},"delimiter":"."';
-    JsonStrPart4 :=
-      ',"flattenFieldToHeaderKey":"","clearSheet":1,"destinationRange":"Offers"},"domain":"takealot.com"}';
-    JsonStrPart5 :=
-      ']}';
-
-    // Concatenate the five parts to form the complete JSON string
-    JsonRequest := TJSONObject.ParseJSONValue(JsonStrPart1 + JsonStrPart2 + JsonStrPart3 + JsonStrPart4 + JsonStrPart5) as TJSONObject;
-
-    Request.Method := TRESTRequestMethod.rmPOST; // Change this to rmGET if needed
-    Request.Resource := '/v2/offers?page_number=1&page_size=2000';
-    Request.AddBody(JsonRequest);
-
-    Request.Client := RestClient;
-    Request.Response := Response;
-
-    Request.Execute;
-
-    // Handle the response, e.g., display it in a Memo:
-    mmostatus.Lines.Add('HTTP Response:');
-    mmostatus.Lines.Add(Response.Content);
-  finally
-    JsonRequest.Free;
-    RestClient.Free;
-    Request.Free;
-    Response.Free;
-  end;
- //
 end;
+
 
 procedure Tfrmmain.btnhelpClick(Sender: TObject);
 begin
@@ -152,6 +108,11 @@ end;
 procedure Tfrmmain.btnReportsClick(Sender: TObject);
 begin
  FrmReports.ShowModal;
+end;
+
+procedure Tfrmmain.btnsettingsClick(Sender: TObject);
+begin
+ frmsettings.ShowModal;
 end;
 
 procedure Tfrmmain.FormActivate(Sender: TObject);

@@ -136,6 +136,14 @@
             <Form>FrmReports</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="frm_Python_Input_U.pas">
+            <Form>frmpyinput</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="frmSettings_U.pas">
+            <Form>frmsettings</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -158,6 +166,18 @@
                 </Source>
             </Delphi.Personality>
             <Deployment Version="3">
+                <DeployFile LocalName="Win64\Debug\TakeAlot_Buy_Box_Manager.rsm" Configuration="Debug" Class="DebugSymbols">
+                    <Platform Name="Win64">
+                        <RemoteName>TakeAlot_Buy_Box_Manager.rsm</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win64\Debug\TakeAlot_Buy_Box_Manager.exe" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win64">
+                        <RemoteName>TakeAlot_Buy_Box_Manager.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="Win32\Debug\TakeAlot_Buy_Box_Manager.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>TakeAlot_Buy_Box_Manager.exe</RemoteName>

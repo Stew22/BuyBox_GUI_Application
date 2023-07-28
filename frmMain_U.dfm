@@ -164,6 +164,7 @@ object frmmain: Tfrmmain
       ImageIndex = 7
       Images = il1
       TabOrder = 4
+      OnClick = btnsettingsClick
     end
     object btnhelp: TButton
       Left = 712
@@ -645,39 +646,26 @@ object frmmain: Tfrmmain
       end
     end
   end
-  object idhtp1: TIdHTTP
-    IOHandler = idslhndlrscktpnsl1
-    ProtocolVersion = pv1_0
-    ProxyParams.BasicAuthentication = False
-    ProxyParams.ProxyPort = 0
-    Request.ContentLength = -1
-    Request.ContentRangeEnd = -1
-    Request.ContentRangeStart = -1
-    Request.ContentRangeInstanceLength = -1
-    Request.Accept = 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
-    Request.BasicAuthentication = False
-    Request.UserAgent = 'Mozilla/3.0 (compatible; Indy Library)'
-    Request.Ranges.Units = 'bytes'
-    Request.Ranges = <>
-    HTTPOptions = [hoForceEncodeParams]
-    Left = 632
-    Top = 72
+  object pythngn1: TPythonEngine
+    DllPath = 
+      'C:\Users\User\Desktop\Files\Programs\BuyBox_GUI_Application\Gith' +
+      'ub\Python'
+    IO = pythngnptpt1
+    Left = 248
+    Top = 48
   end
-  object idslhndlrscktpnsl1: TIdSSLIOHandlerSocketOpenSSL
-    MaxLineAction = maException
-    Port = 0
-    DefaultPort = 0
-    SSLOptions.Method = sslvTLSv1_2
-    SSLOptions.SSLVersions = [sslvTLSv1_2]
-    SSLOptions.Mode = sslmUnassigned
-    SSLOptions.VerifyMode = []
-    SSLOptions.VerifyDepth = 0
-    Left = 488
+  object pythngnptpt1: TPythonGUIInputOutput
+    UnicodeIO = True
+    RawOutput = False
+    Output = mmostatus
+    Left = 312
     Top = 56
   end
-  object rstclnt1: TRESTClient
-    Params = <>
-    Left = 560
-    Top = 32
+  object pythndlphvr1: TPythonDelphiVar
+    Engine = pythngn1
+    Module = '__main__'
+    VarName = 'varname1'
+    Left = 384
+    Top = 64
   end
 end

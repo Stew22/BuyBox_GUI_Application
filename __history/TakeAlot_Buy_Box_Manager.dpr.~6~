@@ -1,0 +1,20 @@
+program TakeAlot_Buy_Box_Manager;
+
+uses
+  Vcl.Forms,
+  frmMain_U in 'frmMain_U.pas' {frmmain},
+  frmhelpprompt_U in 'frmhelpprompt_U.pas' {frmhelppeompt},
+  frmReports_U in 'frmReports_U.pas' {FrmReports},
+  frm_Python_Input_U in 'frm_Python_Input_U.pas' {Form1};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(Tfrmmain, frmmain);
+  Application.CreateForm(Tfrmhelppeompt, frmhelppeompt);
+  Application.CreateForm(TFrmReports, FrmReports);
+  Application.CreateForm(TForm1, Form1);
+  Application.Run;
+end.
