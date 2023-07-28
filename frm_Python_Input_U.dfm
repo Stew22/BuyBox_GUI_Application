@@ -19,8 +19,8 @@ object frmpyinput: Tfrmpyinput
   object mmopythoninput: TMemo
     Left = 8
     Top = 8
-    Width = 745
-    Height = 281
+    Width = 755
+    Height = 292
     BevelKind = bkFlat
     BorderStyle = bsNone
     Lines.Strings = (
@@ -146,14 +146,14 @@ object frmpyinput: Tfrmpyinput
       '    # Write the BuyBox_Results DataFrame to a new Excel file'
       
         '    df_destination.to_excel(r'#39'C:\Users\User\Desktop\Files\Progra' +
-        'ms\Takealot Buy Box\BuyBoxResults.xlsx'#39', index=False, '
-      'sheet_name=destination_sheet_name)'
+        'ms\Takealot Buy Box\BuyBoxResults.xlsx'#39', index=False, sheet_name' +
+        '=destination_sheet_name)'
       ''
       '    print("Process completed successfully.")'
       ''
       'make_api_request()')
     ReadOnly = True
-    ScrollBars = ssVertical
+    ScrollBars = ssBoth
     TabOrder = 0
   end
 end

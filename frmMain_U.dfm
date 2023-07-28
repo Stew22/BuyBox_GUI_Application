@@ -23,7 +23,7 @@ object frmmain: Tfrmmain
     Top = 192
     Width = 788
     Height = 289
-    ActivePage = tsbuybox
+    ActivePage = tsstatus
     TabOrder = 0
     object tsstatus: TTabSheet
       Caption = 'Response'
@@ -648,15 +648,15 @@ object frmmain: Tfrmmain
   end
   object pythngn1: TPythonEngine
     DllPath = 
-      'C:\Users\User\Desktop\Files\Programs\BuyBox_GUI_Application\Gith' +
-      'ub\Python'
+      'C:\Users\User\Desktop\Files\Programs\BuyBox_GUI_Application\Pyth' +
+      'on'
     IO = pythngnptpt1
     Left = 248
     Top = 48
   end
   object pythngnptpt1: TPythonGUIInputOutput
     UnicodeIO = True
-    RawOutput = False
+    RawOutput = True
     Output = mmostatus
     Left = 312
     Top = 56

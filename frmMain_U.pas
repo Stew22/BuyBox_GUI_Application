@@ -9,7 +9,7 @@ uses
   IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient, IdHTTP,
   IdIOHandler, IdIOHandlerSocket, IdIOHandlerStack, IdSSL, IdSSLOpenSSL,
   REST.Types, Data.Bind.Components, Data.Bind.ObjectScope, REST.Client,system.JSON,
-  PythonEngine, Vcl.PythonGUIInputOutput,frmSettings_U,VarPyth,WrapDelphi;
+  PythonEngine, Vcl.PythonGUIInputOutput,frmSettings_U,VarPyth,WrapDelphi,frm_Python_Get_Offers_U;
 
 type
   Tfrmmain = class(TForm)
@@ -77,7 +77,7 @@ implementation
 
 procedure Tfrmmain.btngetoffersClick(Sender: TObject);
 var
-Python: Variant;
+Pycode:string;
 begin
  // after getting the offers using python for delphi
  // we then write the offers returned to a textfile or a csv file
@@ -95,8 +95,13 @@ begin
  //and also need to add the ability to add in exepections , for items that
  //cannot be won back due to margins
  // we can later add the ability to change seller price through API request
+ //see how we will change the seller price through an API call
  //
-
+ Pycode:= frmgetofferspython.mmogetoffers.Text;
+ //
+ pythngn1.ExecString(Pycode);
+ //
+  //
 end;
 
 

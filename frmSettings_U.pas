@@ -5,13 +5,17 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, System.ImageList, Vcl.ImgList,
-  Vcl.StdCtrls,frm_Python_Input_U;
+  Vcl.StdCtrls,frm_Python_Input_U,frm_Python_Get_Offers_U;
 
 type
   Tfrmsettings = class(TForm)
     btnpythoninput: TButton;
     il1: TImageList;
+    btnofferssetting: TButton;
+    btnapikey: TButton;
     procedure btnpythoninputClick(Sender: TObject);
+    procedure btnofferssettingClick(Sender: TObject);
+    procedure btnapikeyClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -24,6 +28,25 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure Tfrmsettings.btnapikeyClick(Sender: TObject);
+begin
+//here we will open an inputbox or input query and save the API key to a
+//file that will be encrypted at runtime
+ if InputBox('Seller Portal API Key', 'API Key : ','') <> '' then
+ begin
+
+ //after we saved it correctly we will issue the user with a
+ end else
+ begin
+   ShowMessage('API Key Was Not Changed !');
+ end;
+end;
+
+procedure Tfrmsettings.btnofferssettingClick(Sender: TObject);
+begin
+ frmgetofferspython.ShowModal;
+end;
 
 procedure Tfrmsettings.btnpythoninputClick(Sender: TObject);
 begin
