@@ -122,8 +122,11 @@ end;
 
 procedure Tfrmmain.FormActivate(Sender: TObject);
 begin
-
-//
+ //set the path to python folder dynamically at form activate
+ pythngn1.DllPath:=ExtractFileDir(Application.ExeName) + '\Python';
+ pythngn1.DllName:='python310.dll';
+ //
+ //
  btncheckbuybox.Enabled:=False;
  btnprocess.Enabled:=False;
  //
