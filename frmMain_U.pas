@@ -66,6 +66,7 @@ type
 
   public
     { Public declarations }
+    ApplicationCount, BuyBoxCount , LostBuyBoxCount :Integer;
   end;
 
 var
@@ -100,6 +101,20 @@ begin
  Pycode:= frmgetofferspython.mmogetoffers.Text;
  //
  pythngn1.ExecString(Pycode);
+ //here we need to check if there was a posotive result , if there wasnt then we
+ //need to tell the user
+ //if there was a posotive result then store the results in a Tstringlist
+ //
+ if mmostatus.Text<> '' then
+ begin
+
+ end else
+ begin
+  ShowMessage('An Error Has Accoured ,Please Try Again , If The Error Keeps Occuring Then Please Log A Bug !');
+ end;
+
+
+
  //
  //
 end;
@@ -123,7 +138,7 @@ end;
 procedure Tfrmmain.FormActivate(Sender: TObject);
 begin
  //set the path to python folder dynamically at form activate
- pythngn1.DllPath:=ExtractFileDir(Application.ExeName) + '\Python';
+ pythngn1.DllPath:=ExtractFileDir(Application.ExeName) + '\Python\';
  pythngn1.DllName:='python310.dll';
  //
  //

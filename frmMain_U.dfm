@@ -13,8 +13,10 @@ object frmmain: Tfrmmain
   Font.Name = 'Tahoma'
   Font.Style = []
   Menu = mm1
+  OldCreateOrder = True
   Position = poDesktopCenter
   OnActivate = FormActivate
+  PixelsPerInch = 96
   TextHeight = 13
   object pgcmain: TPageControl
     Left = 8
@@ -645,25 +647,22 @@ object frmmain: Tfrmmain
     end
   end
   object pythngn1: TPythonEngine
-    DllPath = 
-      'C:\Users\User\Desktop\Files\Programs\BuyBox_GUI_Application\Pyth' +
-      'on'
     IO = pythngnptpt1
-    Left = 248
-    Top = 48
+    Left = 544
+    Top = 64
   end
   object pythngnptpt1: TPythonGUIInputOutput
     UnicodeIO = True
     RawOutput = True
     Output = mmostatus
-    Left = 312
+    Left = 624
     Top = 56
   end
   object pythndlphvr1: TPythonDelphiVar
     Engine = pythngn1
     Module = '__main__'
     VarName = 'varname1'
-    Left = 384
-    Top = 64
+    Left = 704
+    Top = 48
   end
 end

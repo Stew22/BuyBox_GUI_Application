@@ -12,6 +12,7 @@ object frmgetofferspython: Tfrmgetofferspython
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
+  Menu = mm1
   OldCreateOrder = False
   Position = poScreenCenter
   PixelsPerInch = 96
@@ -94,5 +95,45 @@ object frmgetofferspython: Tfrmgetofferspython
       'print(response.text)')
     ScrollBars = ssBoth
     TabOrder = 0
+  end
+  object mm1: TMainMenu
+    Left = 320
+    Top = 144
+    object Scripts1: TMenuItem
+      Caption = 'Scripts'
+      object Scripts2: TMenuItem
+        Caption = 'Offers'
+        object OffersPage11: TMenuItem
+          Caption = 'Offers Page 1'
+        end
+        object OffersPage12: TMenuItem
+          Caption = 'Offers Page 2'
+        end
+        object OffersPage31: TMenuItem
+          Caption = 'Offers Page 3'
+        end
+        object OffersPage32: TMenuItem
+          Caption = 'Offers Page 4'
+        end
+        object OffersPage51: TMenuItem
+          Caption = 'Offers Page 5'
+        end
+        object OffersPage52: TMenuItem
+          Caption = 'Offers Page 6'
+        end
+        object OffersPAge71: TMenuItem
+          Caption = 'Offers Page 7'
+        end
+        object OffersPage81: TMenuItem
+          Caption = 'Offers Page 8'
+        end
+        object OffersPage82: TMenuItem
+          Caption = 'Offers Page 9'
+        end
+        object OffersPAge101: TMenuItem
+          Caption = 'Offers Page 10'
+        end
+      end
+    end
   end
 end

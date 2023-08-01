@@ -26,11 +26,14 @@ type
     dbgrd1: TDBGrid;
     btnupdate: TButton;
     btnexport: TButton;
+    dlgSave1: TSaveDialog;
     procedure FormActivate(Sender: TObject);
     procedure PDF1Click(Sender: TObject);
     procedure btnYTDClick(Sender: TObject);
     procedure btnTodayClick(Sender: TObject);
     procedure btnmonthClick(Sender: TObject);
+    procedure btnexportClick(Sender: TObject);
+    procedure btnupdateClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -69,6 +72,17 @@ begin
   Result := aMsgdlg.Showmodal;
 end;
 
+procedure TFrmReports.btnexportClick(Sender: TObject);
+begin
+ if dlgSave1.Execute() then
+ begin
+  //select where you would like to save the file
+ end else
+ begin
+  ShowMessage('Save File Operation Has Been Cancelled !');
+ end;
+end;
+
 procedure TFrmReports.btnmonthClick(Sender: TObject);
 begin
  if MyMessageDlg('Please Select A File Type',TMsgDlgType.mtCustom, [TMsgDlgBtn.mbYes,TMsgDlgBtn.mbNo],['PDF' , 'Text File'],'File Type') = mrYes  then
@@ -96,6 +110,12 @@ begin
  end;
 end;
 
+procedure TFrmReports.btnupdateClick(Sender: TObject);
+begin
+ //if there was a sucessfull update then we can enable the ability to export
+ //
+end;
+
 procedure TFrmReports.btnYTDClick(Sender: TObject);
 begin
  if MyMessageDlg('Please Select A File Type',TMsgDlgType.mtCustom, [TMsgDlgBtn.mbYes,TMsgDlgBtn.mbNo],['PDF' , 'Text File'],'File Type') = mrYes  then
@@ -117,6 +137,9 @@ begin
  //check if there is any dates selected if not , then raise error
  //
  btnexport.Enabled:=False;
+ //
+ dlgSave1.InitialDir:=ExtractFileDir(Application.ExeName);
+ dlgSave1.Filter:='Text files (*.txt)|*.TXT|Any file (*.*)|*.*';
 end;
 
 procedure TFrmReports.PDF1Click(Sender: TObject);
