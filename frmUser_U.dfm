@@ -3,7 +3,7 @@ object frmselectuser: Tfrmselectuser
   Top = 0
   Caption = 'Select User'
   ClientHeight = 128
-  ClientWidth = 313
+  ClientWidth = 399
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,7 +18,7 @@ object frmselectuser: Tfrmselectuser
   object pnl1: TPanel
     Left = 8
     Top = 8
-    Width = 297
+    Width = 383
     Height = 81
     BevelKind = bkFlat
     BevelOuter = bvNone
@@ -53,6 +53,14 @@ object frmselectuser: Tfrmselectuser
       TabOrder = 1
       Text = ''
     end
+    object chkremeberme: TCheckBox
+      Left = 284
+      Top = 45
+      Width = 97
+      Height = 17
+      Caption = 'Remember Me'
+      TabOrder = 2
+    end
   end
   object btnselectuser: TButton
     Left = 8
@@ -66,7 +74,7 @@ object frmselectuser: Tfrmselectuser
     OnClick = btnselectuserClick
   end
   object btnregisteruser: TButton
-    Left = 208
+    Left = 294
     Top = 95
     Width = 97
     Height = 25
@@ -80,7 +88,7 @@ object frmselectuser: Tfrmselectuser
     Left = 24
     Top = 8
     Bitmap = {
-      494C010102000800040010001000FFFFFFFFFF00FFFFFFFFFFFFFFFF424D3600
+      494C010102000800040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -216,6 +224,7 @@ object frmselectuser: Tfrmselectuser
       CFF33F8300000000CFF33FBB00000000C7E73FBB00000000E187BFB300000000
       F00F9E3300000000FFFFC00700000000FC3FC40F00000000F99FDE6700000000
       F3CFDE6700000000F3CFDE6700000000F3CFC40B00000000F99FE1F100000000
-      FC3FFFFB00000000FFFFFFFF00000000}
+      FC3FFFFB00000000FFFFFFFF0000000000000000000000000000000000000000
+      000000000000}
   end
 end

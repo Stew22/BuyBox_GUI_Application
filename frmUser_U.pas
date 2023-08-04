@@ -17,6 +17,7 @@ type
     medtpword: TMaskEdit;
     lbl2: TLabel;
     btnregisteruser: TButton;
+    chkremeberme: TCheckBox;
     procedure btnregisteruserClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure btnselectuserClick(Sender: TObject);
@@ -44,7 +45,7 @@ begin
  //
  if Uname <> '' then
  begin
-  //now that we have captured the user name , we can then ask for the p
+  //now that we have captured the user name , we can then ask for the password
   if Pword <> '' then
   begin
    //successfully captured all the user information
@@ -90,6 +91,8 @@ begin
     Readln(Ufile,Users);
     //now we add it to the combobox
     cbbuser.Items.Add(Users); //this will add the users
+    //we now need to populate the password field , add a box to show password ?
+
    end;
    CloseFile(Ufile);
    //now we need to populate the password file
