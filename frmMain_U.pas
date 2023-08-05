@@ -9,7 +9,8 @@ uses
   IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient, IdHTTP,
   IdIOHandler, IdIOHandlerSocket, IdIOHandlerStack, IdSSL, IdSSLOpenSSL,
   REST.Types, Data.Bind.Components, Data.Bind.ObjectScope, REST.Client,system.JSON,
-  PythonEngine, Vcl.PythonGUIInputOutput,frmSettings_U,VarPyth,WrapDelphi,frm_Python_Get_Offers_U;
+  PythonEngine, Vcl.PythonGUIInputOutput,frmSettings_U,VarPyth,WrapDelphi,frm_Python_Get_Offers_U,
+  System.StrUtils,System.Types,System.AnsiStrings,ProgressFormUnit_U,superobject;
 
 type
   Tfrmmain = class(TForm)
@@ -55,12 +56,23 @@ type
     btnhelp: TButton;
     pythngn1: TPythonEngine;
     pythngnptpt1: TPythonGUIInputOutput;
-    pythndlphvr1: TPythonDelphiVar;
+    lbl7: TLabel;
+    lblproductlistings: TLabel;
+    tsbuyboxresults: TTabSheet;
+    tmr1: TTimer;
+    mmo1: TMemo;
+    mmo2: TMemo;
     procedure FormActivate(Sender: TObject);
     procedure btngetoffersClick(Sender: TObject);
     procedure btnhelpClick(Sender: TObject);
     procedure btnReportsClick(Sender: TObject);
     procedure btnsettingsClick(Sender: TObject);
+    procedure btnprocessClick(Sender: TObject);
+    procedure GetOffers1Click(Sender: TObject);
+    procedure CheckBuyBoxes1Click(Sender: TObject);
+    procedure ProcessResults1Click(Sender: TObject);
+    procedure Exit1Click(Sender: TObject);
+    procedure btncheckbuyboxClick(Sender: TObject);
   private
     { Private declarations }
 
@@ -75,6 +87,65 @@ var
 implementation
 
 {$R *.dfm}
+
+
+// Helper function to extract substring after a specific substring
+function ExtractAfter(const AInput, ASubStr: string): string;
+var
+  SubStrPos: Integer;
+begin
+  SubStrPos := Pos(ASubStr, AInput);
+  if SubStrPos > 0 then
+    Result := Copy(AInput, SubStrPos + Length(ASubStr), MaxInt)
+  else
+    Result := '';
+end;
+
+procedure Tfrmmain.btncheckbuyboxClick(Sender: TObject);
+var
+  JSONObj, CoreObj, BuyBoxObj, SellerDetailObj: ISuperObject;
+  Title, DesktopHref, SellerDisplayName: string;
+  PurchasePrice: Double;
+begin
+  // Extract the JSON string from mmo1
+  JSONObj := SO(mmo1.Lines.Text);
+
+  // Extract the required information
+  CoreObj := JSONObj.O['core'];
+  BuyBoxObj := JSONObj.O['buybox'];
+  if Assigned(CoreObj) and Assigned(BuyBoxObj) then
+  begin
+    // Retrieve the data
+    Title := CoreObj.S['title'];
+
+    // Get the correct "desktop_href" from "desktop_href" field
+    DesktopHref := JSONObj.S['desktop_href'];
+
+    // Get the purchase price from the correct field
+    PurchasePrice := BuyBoxObj.D['listing_price'];
+
+    // Access the "seller_detail" object
+    SellerDetailObj := JSONObj.O['seller_detail'];
+    if Assigned(SellerDetailObj) then
+    begin
+      SellerDisplayName := SellerDetailObj.S['display_name']; // Access the "display_name" field from "seller_detail"
+    end
+    else
+    begin
+      SellerDisplayName := 'Seller name not found'; // Default value if "seller_detail" is not available
+    end;
+
+    // Display the extracted information in mmo2
+    //mmo2.Lines.Add('1: Title - ' + Title);
+    mmo2.Lines.Add('2: Desktop Href - ' + DesktopHref);
+    mmo2.Lines.Add('3: Purchase Price - R ' + FormatFloat('#,##0.00', PurchasePrice));
+    mmo2.Lines.Add('4: Seller Display Name - ' + SellerDisplayName);
+  end
+  else
+  begin
+    mmo2.Lines.Add('Error parsing API response.');
+  end;
+end;
 
 procedure Tfrmmain.btngetoffersClick(Sender: TObject);
 var
@@ -107,14 +178,13 @@ begin
  //
  if mmostatus.Text<> '' then
  begin
-
+  btnprocess.Enabled:=True;
  end else
  begin
   ShowMessage('An Error Has Accoured ,Please Try Again , If The Error Keeps Occuring Then Please Log A Bug !');
  end;
-
-
-
+ //now we will add in some small code that will parse the json response and
+ //just populate the label with the product listings total
  //
  //
 end;
@@ -125,6 +195,113 @@ begin
  frmhelppeompt.ShowModal;
 end;
 
+procedure Tfrmmain.btnprocessClick(Sender: TObject);
+var
+  JsonData: string;
+  JsonObj: TJSONObject;
+  JsonArray: TJSONArray;
+  I,J, TotalResults: Integer;
+  ProductObject: TJSONObject;
+  PLID: string;
+  TempString:TStringList;
+begin
+  // Clear the output memo before displaying the products
+  mmobuyboxoutput.Clear;
+
+  TempString:=TStringList.Create;
+
+  // Get the entire JSON data from the memo
+  JsonData := mmostatus.Text;
+
+  // Parse the entire JSON response
+  JsonObj := TJSONObject.ParseJSONValue(TEncoding.UTF8.GetBytes(JsonData), 0) as TJSONObject;
+
+  // Check if the JSON parsing was successful and it is an object
+  if Assigned(JsonObj) and (JsonObj is TJSONObject) then
+  begin
+    try
+      // Extract the "total_results" field
+      TotalResults := JsonObj.GetValue('total_results').Value.ToInteger;
+
+      // Check if "total_results" is a valid number
+      if TotalResults <= 0 then
+      begin
+        mmobuyboxoutput.Lines.Add('No product listings found.');
+        Exit;
+      end;
+
+      // Get the "offers" array containing product listings
+      JsonArray := JsonObj.GetValue('offers') as TJSONArray;
+
+      // Check if "offers" is a valid array
+      if not Assigned(JsonArray) then
+      begin
+        mmobuyboxoutput.Lines.Add('Invalid JSON data. Expected "offers" array.');
+        Exit;
+      end;
+      //
+      frmProgress.pb1.Max:=JsonArray.Count;
+      frmProgress.Show;
+      // Loop through each product listing in the "offers" array
+      for I := 0 to JsonArray.Count - 1 do
+      begin
+        //here we will also add in some code for the pop up progress bar
+        frmProgress.pb1.Position:=frmProgress.pb1.Position + 1;
+        //
+        //Sleep(50);
+        // Get the product object
+        if JsonArray.Items[I] is TJSONObject then
+        begin
+          ProductObject := JsonArray.Items[I] as TJSONObject;
+
+          // Extract the desired fields from the JSON object
+          // Replace "FieldName" with the actual field names you want to extract
+
+          // Extracting RRP (Recommended Retail Price) and Selling Price
+          mmobuyboxoutput.Lines.Add('RRP: ' + ProductObject.GetValue('rrp').Value);
+          mmobuyboxoutput.Lines.Add('Selling Price: ' + ProductObject.GetValue('selling_price').Value);
+
+          // Extracting the product title
+          mmobuyboxoutput.Lines.Add('Title: ' + ProductObject.GetValue('title').Value);
+
+          // Extracting the link to the product
+          mmobuyboxoutput.Lines.Add('Link to Product: ' + ProductObject.GetValue('offer_url').Value);
+
+          // Extract PLID from the offer_url
+          PLID := ExtractAfter(ProductObject.GetValue('offer_url').Value, 'PLID');
+          mmobuyboxoutput.Lines.Add('PLID: ' + PLID.Trim);
+
+          // Add a separator line between products
+          mmobuyboxoutput.Lines.Add('--------------------------------------');
+        end;
+      end;
+      //save the data to the temp string stringlist
+      //
+       lblproductlistings.Caption:=IntToStr(TotalResults);
+      //
+      for J := 0 to mmobuyboxoutput.Lines.Count -1 do
+      begin
+       TempString.Add(mmobuyboxoutput.Lines[J]);
+      end;
+      //TempString.Add('Total product listings: ' + IntToStr(TotalResults));
+      //here we will need to hide the progress once completed
+      // Display the total number of product listings
+      frmProgress.close;
+      //
+      mmobuyboxoutput.Text:=TempString.Text;
+    finally
+      // Free the parsed JSON object
+      JsonObj.Free;
+    end;
+    //now we enable the button
+    btncheckbuybox.Enabled:=True;
+  end
+  else
+  begin
+    mmobuyboxoutput.Lines.Add('Invalid JSON data.');
+  end;
+end;
+
 procedure Tfrmmain.btnReportsClick(Sender: TObject);
 begin
  FrmReports.ShowModal;
@@ -133,6 +310,25 @@ end;
 procedure Tfrmmain.btnsettingsClick(Sender: TObject);
 begin
  frmsettings.ShowModal;
+end;
+
+procedure Tfrmmain.CheckBuyBoxes1Click(Sender: TObject);
+begin
+ if btncheckbuybox.Enabled = True then
+ begin
+
+ end else
+ begin
+
+
+ end;
+end;
+
+procedure Tfrmmain.Exit1Click(Sender: TObject);
+begin
+ mmostatus.Clear;
+ mmobuyboxoutput.Clear;
+ frmmain.Close;
 end;
 
 procedure Tfrmmain.FormActivate(Sender: TObject);
@@ -149,6 +345,22 @@ begin
  mmostatus.Clear;
  mmobuyboxoutput.Clear;
  //
+end;
+
+procedure Tfrmmain.GetOffers1Click(Sender: TObject);
+begin
+btngetoffers.Click;
+end;
+
+procedure Tfrmmain.ProcessResults1Click(Sender: TObject);
+begin
+ if btnprocess.Enabled = True then
+ begin
+
+ end else
+ begin
+   ShowMessage('Please Click Get Offers First !');
+ end;
 end;
 
 end.

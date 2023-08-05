@@ -70,6 +70,7 @@ procedure Tfrmselectuser.btnselectuserClick(Sender: TObject);
 begin
  //first check if the user name and the password match , if they do we can
  //open the form ,
+ frmmain.ShowModal;
 end;
 
 procedure Tfrmselectuser.FormActivate(Sender: TObject);
