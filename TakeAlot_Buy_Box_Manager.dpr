@@ -21,7 +21,7 @@ uses
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
-  Application.CreateForm(Tfrmselectuser, frmselectuser);
+  //Application.CreateForm(Tfrmselectuser, frmselectuser);
   Application.CreateForm(Tfrmmain, frmmain);
   Application.CreateForm(Tfrmhelppeompt, frmhelppeompt);
   Application.CreateForm(TFrmReports, FrmReports);

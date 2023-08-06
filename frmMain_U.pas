@@ -10,7 +10,8 @@ uses
   IdIOHandler, IdIOHandlerSocket, IdIOHandlerStack, IdSSL, IdSSLOpenSSL,
   REST.Types, Data.Bind.Components, Data.Bind.ObjectScope, REST.Client,system.JSON,
   PythonEngine, Vcl.PythonGUIInputOutput,frmSettings_U,VarPyth,WrapDelphi,frm_Python_Get_Offers_U,
-  System.StrUtils,System.Types,System.AnsiStrings,ProgressFormUnit_U,superobject;
+  System.StrUtils,System.Types,System.AnsiStrings,ProgressFormUnit_U,superobject,
+  frm_Python_Input_U;
 
 type
   Tfrmmain = class(TForm)
@@ -61,7 +62,9 @@ type
     tsbuyboxresults: TTabSheet;
     tmr1: TTimer;
     mmo1: TMemo;
-    mmo2: TMemo;
+    pythngnptpt2: TPythonGUIInputOutput;
+    pythngnptpt3: TPythonGUIInputOutput;
+    mmo2: TRichEdit;
     procedure FormActivate(Sender: TObject);
     procedure btngetoffersClick(Sender: TObject);
     procedure btnhelpClick(Sender: TObject);
@@ -73,12 +76,15 @@ type
     procedure ProcessResults1Click(Sender: TObject);
     procedure Exit1Click(Sender: TObject);
     procedure btncheckbuyboxClick(Sender: TObject);
+    procedure tmr1Timer(Sender: TObject);
   private
     { Private declarations }
 
   public
     { Public declarations }
     ApplicationCount, BuyBoxCount , LostBuyBoxCount :Integer;
+    PlidStore , HrefStore ,SellingPriceStore ,SellerStore:TStringList;
+    PythonScriptStore:TStringList;
   end;
 
 var
@@ -103,48 +109,67 @@ end;
 
 procedure Tfrmmain.btncheckbuyboxClick(Sender: TObject);
 var
-  JSONObj, CoreObj, BuyBoxObj, SellerDetailObj: ISuperObject;
-  Title, DesktopHref, SellerDisplayName: string;
+  JSONData: string;
+  Title, DesktopHref, SellerSlug, PurchasePriceStr: string;
   PurchasePrice: Double;
+  IndexStart, IndexEnd: Integer;
 begin
-  // Extract the JSON string from mmo1
-  JSONObj := SO(mmo1.Lines.Text);
+  //before we process the json response in the memo , i need to find a way
+  //i can modify the script PLID
+  PythonScriptStore:=TStringList.Create;
+  //
+  PythonScriptStore.Add(frmpyinput.mmopythoninput.Text);
+  //now we add in the plid , we will need to loop through all our plids stored
+  PythonScriptStore.Add('buy_box_values = ['+ QuotedStr('68577960'));
+  //
+  PythonScriptStore.Add(frmpyinput.mmopart2.text);
+  //now we need to run the python script and generate an reponse
+  pythngn1.IO:=pythngnptpt2;
+  //
+  pythngn1.ExecString(PythonScriptStore.Text);
+  //
+  //we might need to wait first before we process the data
+  //
+  Sleep(3000);
+  //then we will process the reponse
+  // Get the JSON data from the memo
+  //we need to write another python script to parse to response and only return
+  //back the data we want
+  //he problem seems to lie in the format it is returned to the memo
+  //thats why i have errors in parsing it
+  //take a look into that
+  // Get the JSON data from the memo
+   // Get the JSON data from the memo
+  JSONData := mmo1.Lines.Text;
 
-  // Extract the required information
-  CoreObj := JSONObj.O['core'];
-  BuyBoxObj := JSONObj.O['buybox'];
-  if Assigned(CoreObj) and Assigned(BuyBoxObj) then
-  begin
-    // Retrieve the data
-    Title := CoreObj.S['title'];
+  // Extract the title
+  IndexStart := Pos('''title'': "', JSONData) + Length('''title'': "');
+  IndexEnd := PosEx('''', JSONData, IndexStart);
+  Title := Copy(JSONData, IndexStart, IndexEnd - IndexStart);
 
-    // Get the correct "desktop_href" from "desktop_href" field
-    DesktopHref := JSONObj.S['desktop_href'];
+  // Extract the desktop_href
+  IndexStart := Pos('''desktop_href'': ''', JSONData) + Length('''desktop_href'': ''');
+  IndexEnd := PosEx('''', JSONData, IndexStart);
+  DesktopHref := Copy(JSONData, IndexStart, IndexEnd - IndexStart);
 
-    // Get the purchase price from the correct field
-    PurchasePrice := BuyBoxObj.D['listing_price'];
+  // Extract the purchase_price
+  IndexStart := Pos('''purchase_price'': ', JSONData) + Length('''purchase_price'': ');
+  IndexEnd := PosEx(',', JSONData, IndexStart);
+  PurchasePriceStr := Copy(JSONData, IndexStart, IndexEnd - IndexStart);
+  PurchasePrice := StrToFloatDef(PurchasePriceStr, 0.0);
 
-    // Access the "seller_detail" object
-    SellerDetailObj := JSONObj.O['seller_detail'];
-    if Assigned(SellerDetailObj) then
-    begin
-      SellerDisplayName := SellerDetailObj.S['display_name']; // Access the "display_name" field from "seller_detail"
-    end
-    else
-    begin
-      SellerDisplayName := 'Seller name not found'; // Default value if "seller_detail" is not available
-    end;
-
-    // Display the extracted information in mmo2
-    //mmo2.Lines.Add('1: Title - ' + Title);
-    mmo2.Lines.Add('2: Desktop Href - ' + DesktopHref);
-    mmo2.Lines.Add('3: Purchase Price - R ' + FormatFloat('#,##0.00', PurchasePrice));
-    mmo2.Lines.Add('4: Seller Display Name - ' + SellerDisplayName);
-  end
-  else
-  begin
-    mmo2.Lines.Add('Error parsing API response.');
-  end;
+  // Extract the seller_slug
+  IndexStart := Pos('''seller_detail''', JSONData) + Length('''seller_detail''');
+  IndexStart := Pos('''display_name'': ''', JSONData, IndexStart) + Length('''display_name'': ''');
+  IndexEnd := PosEx('''', JSONData, IndexStart);
+  SellerSlug := Copy(JSONData, IndexStart, IndexEnd - IndexStart);
+  //
+  mmo2.Lines.Add('Title: ' + Title);
+  mmo2.Lines.Add('Desktop Href: ' + DesktopHref);
+  mmo2.Lines.Add('Purchase Price: ' + FloatToStr(PurchasePrice));
+  mmo2.Lines.Add('Seller Slug: ' + SellerSlug);
+  // Display or use the extracted values as needed
+  tmr1.Enabled:=True;
 end;
 
 procedure Tfrmmain.btngetoffersClick(Sender: TObject);
@@ -172,6 +197,7 @@ begin
  Pycode:= frmgetofferspython.mmogetoffers.Text;
  //
  pythngn1.ExecString(Pycode);
+
  //here we need to check if there was a posotive result , if there wasnt then we
  //need to tell the user
  //if there was a posotive result then store the results in a Tstringlist
@@ -207,8 +233,13 @@ var
 begin
   // Clear the output memo before displaying the products
   mmobuyboxoutput.Clear;
-
+  //Create the stringlist to store the data obtained from processing the JSON
   TempString:=TStringList.Create;
+  HrefStore:=TStringList.Create;
+  SellingPriceStore:=TStringList.Create;
+  SellerStore:=TStringList.Create;
+  //then we will need to check how we are going store this information
+  //for reporting purposes
 
   // Get the entire JSON data from the memo
   JsonData := mmostatus.Text;
@@ -260,16 +291,20 @@ begin
           // Extracting RRP (Recommended Retail Price) and Selling Price
           mmobuyboxoutput.Lines.Add('RRP: ' + ProductObject.GetValue('rrp').Value);
           mmobuyboxoutput.Lines.Add('Selling Price: ' + ProductObject.GetValue('selling_price').Value);
+          //
+          //SellingPriceStore.Add(ProductObject.GetValue('selling_price').Value);
 
           // Extracting the product title
           mmobuyboxoutput.Lines.Add('Title: ' + ProductObject.GetValue('title').Value);
 
           // Extracting the link to the product
           mmobuyboxoutput.Lines.Add('Link to Product: ' + ProductObject.GetValue('offer_url').Value);
+          //HrefStore.Add(ProductObject.GetValue('offer_url').Value);
 
           // Extract PLID from the offer_url
           PLID := ExtractAfter(ProductObject.GetValue('offer_url').Value, 'PLID');
           mmobuyboxoutput.Lines.Add('PLID: ' + PLID.Trim);
+          //PlidStore.Add(PLID.Trim);
 
           // Add a separator line between products
           mmobuyboxoutput.Lines.Add('--------------------------------------');
@@ -334,6 +369,7 @@ end;
 procedure Tfrmmain.FormActivate(Sender: TObject);
 begin
  //set the path to python folder dynamically at form activate
+ pythngnptpt1.Output:=mmostatus;
  pythngn1.DllPath:=ExtractFileDir(Application.ExeName) + '\Python\';
  pythngn1.DllName:='python310.dll';
  //
@@ -361,6 +397,41 @@ begin
  begin
    ShowMessage('Please Click Get Offers First !');
  end;
+end;
+
+procedure Tfrmmain.tmr1Timer(Sender: TObject);
+var
+  TargetLine: Integer;
+  TargetText: string;
+  SellerName: string;
+  i: Integer;
+begin
+  TargetText := 'Seller Slug:';
+  SellerName := 'Sarah Beauty Supplies';
+
+  mmo2.Lines.BeginUpdate;
+  try
+    mmo2.SelAttributes.Color := clBlack; // Set the default color to black for all lines.
+
+    TargetLine := mmo2.Lines.IndexOf(TargetText);
+
+    if TargetLine <> -1 then // Check if the line with "Seller Slug:" is found.
+    begin
+      Inc(TargetLine); // Move to the next line after "Seller Slug:".
+      if TargetLine < mmo2.Lines.Count then // Ensure the line is within bounds.
+      begin
+        // Highlight the line with "Seller Slug:" in red if the seller name is not "Sarah Beauty Supplies".
+        if mmo2.Lines[TargetLine] <> SellerName then
+        begin
+          mmo2.SelStart := mmo2.Perform(EM_LINEINDEX, TargetLine, 0);
+          mmo2.SelLength := Length(mmo2.Lines[TargetLine]);
+          mmo2.SelAttributes.Color := clRed;
+        end;
+      end;
+    end;
+  finally
+    mmo2.Lines.EndUpdate;
+  end;
 end;
 
 end.

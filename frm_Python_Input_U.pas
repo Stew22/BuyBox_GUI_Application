@@ -9,6 +9,7 @@ uses
 type
   Tfrmpyinput = class(TForm)
     mmopythoninput: TMemo;
+    mmopart2: TMemo;
   private
     { Private declarations }
   public

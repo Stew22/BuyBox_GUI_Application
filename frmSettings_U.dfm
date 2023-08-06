@@ -5,7 +5,7 @@ object frmsettings: Tfrmsettings
   BorderStyle = bsSingle
   Caption = 'Settings'
   ClientHeight = 114
-  ClientWidth = 147
+  ClientWidth = 154
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,9 +17,9 @@ object frmsettings: Tfrmsettings
   object btnpythoninput: TButton
     Left = 8
     Top = 16
-    Width = 121
+    Width = 138
     Height = 25
-    Caption = 'Python Input'
+    Caption = 'Check Buy Box Setting'
     ImageIndex = 0
     Images = il1
     TabOrder = 0
@@ -28,7 +28,7 @@ object frmsettings: Tfrmsettings
   object btnofferssetting: TButton
     Left = 8
     Top = 47
-    Width = 121
+    Width = 138
     Height = 25
     Caption = 'Get Offers Setting'
     ImageIndex = 1
@@ -39,7 +39,7 @@ object frmsettings: Tfrmsettings
   object btnapikey: TButton
     Left = 8
     Top = 78
-    Width = 121
+    Width = 138
     Height = 25
     Caption = 'API Key'
     ImageIndex = 2
@@ -48,8 +48,8 @@ object frmsettings: Tfrmsettings
     OnClick = btnapikeyClick
   end
   object il1: TImageList
-    Left = 104
-    Top = 16
+    Left = 48
+    Top = 64
     Bitmap = {
       494C010103000800040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
