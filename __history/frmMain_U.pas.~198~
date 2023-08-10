@@ -11,7 +11,7 @@ uses
   REST.Types, Data.Bind.Components, Data.Bind.ObjectScope, REST.Client,system.JSON,
   PythonEngine, Vcl.PythonGUIInputOutput,frmSettings_U,VarPyth,WrapDelphi,frm_Python_Get_Offers_U,
   System.StrUtils,System.Types,System.AnsiStrings,ProgressFormUnit_U,superobject,
-  frm_Python_Input_U;
+  frm_Python_Input_U,Winapi.ShellAPI;
 
 type
   Tfrmmain = class(TForm)
@@ -65,6 +65,8 @@ type
     pythngnptpt2: TPythonGUIInputOutput;
     pythngnptpt3: TPythonGUIInputOutput;
     mmo2: TRichEdit;
+    lbl8: TLabel;
+    lbl9: TLabel;
     procedure FormActivate(Sender: TObject);
     procedure btngetoffersClick(Sender: TObject);
     procedure btnhelpClick(Sender: TObject);
@@ -76,6 +78,7 @@ type
     procedure ProcessResults1Click(Sender: TObject);
     procedure Exit1Click(Sender: TObject);
     procedure btncheckbuyboxClick(Sender: TObject);
+    procedure tmr1Timer(Sender: TObject);
   private
     { Private declarations }
 
@@ -168,6 +171,7 @@ begin
   mmo2.Lines.Add('Purchase Price: ' + FloatToStr(PurchasePrice));
   mmo2.Lines.Add('Seller Slug: ' + SellerSlug);
   // Display or use the extracted values as needed
+  tmr1.Enabled:=True;
 end;
 
 procedure Tfrmmain.btngetoffersClick(Sender: TObject);
@@ -302,7 +306,7 @@ begin
           // Extract PLID from the offer_url
           PLID := ExtractAfter(ProductObject.GetValue('offer_url').Value, 'PLID');
           mmobuyboxoutput.Lines.Add('PLID: ' + PLID.Trim);
-          //PlidStore.Add(PLID.Trim);
+          PlidStore.Add(PLID.Trim);
 
           // Add a separator line between products
           mmobuyboxoutput.Lines.Add('--------------------------------------');
@@ -395,6 +399,41 @@ begin
  begin
    ShowMessage('Please Click Get Offers First !');
  end;
+end;
+
+procedure Tfrmmain.tmr1Timer(Sender: TObject);
+var
+  TargetLine: Integer;
+  TargetText: string;
+  SellerName: string;
+  i: Integer;
+begin
+  TargetText := 'Seller Slug:';
+  SellerName := 'Sarah Beauty Supplies';
+
+  mmo2.Lines.BeginUpdate;
+  try
+    mmo2.SelAttributes.Color := clBlack; // Set the default color to black for all lines.
+
+    TargetLine := mmo2.Lines.IndexOf(TargetText);
+
+    if TargetLine <> -1 then // Check if the line with "Seller Slug:" is found.
+    begin
+      Inc(TargetLine); // Move to the next line after "Seller Slug:".
+      if TargetLine < mmo2.Lines.Count then // Ensure the line is within bounds.
+      begin
+        // Highlight the line with "Seller Slug:" in red if the seller name is not "Sarah Beauty Supplies".
+        if mmo2.Lines[TargetLine] <> SellerName then
+        begin
+          mmo2.SelStart := mmo2.Perform(EM_LINEINDEX, TargetLine, 0);
+          mmo2.SelLength := Length(mmo2.Lines[TargetLine]);
+          mmo2.SelAttributes.Color := clRed;
+        end;
+      end;
+    end;
+  finally
+    mmo2.Lines.EndUpdate;
+  end;
 end;
 
 end.

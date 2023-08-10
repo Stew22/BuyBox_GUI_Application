@@ -13,15 +13,17 @@ object frmmain: Tfrmmain
   Font.Name = 'Tahoma'
   Font.Style = []
   Menu = mm1
+  OldCreateOrder = True
   Position = poScreenCenter
   OnActivate = FormActivate
+  PixelsPerInch = 96
   TextHeight = 13
   object pgcmain: TPageControl
     Left = 8
     Top = 192
     Width = 788
     Height = 289
-    ActivePage = tsbuyboxresults
+    ActivePage = tsstatus
     TabOrder = 0
     object tsstatus: TTabSheet
       Caption = 'Response'
@@ -67,18 +69,34 @@ object frmmain: Tfrmmain
     object tsbuyboxresults: TTabSheet
       Caption = 'Buy Box Results'
       ImageIndex = 2
+      object lbl8: TLabel
+        Left = 3
+        Top = 13
+        Width = 86
+        Height = 13
+        Caption = 'JSON Response : '
+      end
+      object lbl9: TLabel
+        Left = 295
+        Top = 13
+        Width = 57
+        Height = 13
+        Caption = 'Response : '
+      end
       object mmo1: TMemo
         Left = 3
-        Top = 16
+        Top = 32
         Width = 286
-        Height = 242
+        Height = 226
+        BevelKind = bkFlat
         TabOrder = 0
       end
       object mmo2: TRichEdit
-        Left = 300
-        Top = 16
+        Left = 295
+        Top = 32
         Width = 469
-        Height = 242
+        Height = 226
+        BevelKind = bkFlat
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
@@ -86,6 +104,7 @@ object frmmain: Tfrmmain
         Font.Style = []
         ParentFont = False
         TabOrder = 1
+        Zoom = 100
       end
     end
   end
@@ -662,6 +681,7 @@ object frmmain: Tfrmmain
       Caption = 'Settings'
       object Settings2: TMenuItem
         Caption = 'Settings'
+        OnClick = Settings2Click
       end
     end
     object File2: TMenuItem
@@ -682,9 +702,11 @@ object frmmain: Tfrmmain
         Caption = 'Support'
         object LogABug1: TMenuItem
           Caption = 'Log A Bug'
+          OnClick = LogABug1Click
         end
         object FeatureRequest1: TMenuItem
           Caption = 'Feature Request '
+          OnClick = FeatureRequest1Click
         end
       end
     end

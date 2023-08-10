@@ -45,7 +45,6 @@ object frmhelppeompt: Tfrmhelppeompt
     ImageIndex = 3
     Images = il1
     TabOrder = 2
-    OnClick = btnfeaturereqClick
   end
   object btnlogabug: TButton
     Left = 8

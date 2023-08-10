@@ -11,7 +11,7 @@ uses
   REST.Types, Data.Bind.Components, Data.Bind.ObjectScope, REST.Client,system.JSON,
   PythonEngine, Vcl.PythonGUIInputOutput,frmSettings_U,VarPyth,WrapDelphi,frm_Python_Get_Offers_U,
   System.StrUtils,System.Types,System.AnsiStrings,ProgressFormUnit_U,superobject,
-  frm_Python_Input_U;
+  frm_Python_Input_U,Winapi.ShellAPI;
 
 type
   Tfrmmain = class(TForm)
@@ -65,6 +65,8 @@ type
     pythngnptpt2: TPythonGUIInputOutput;
     pythngnptpt3: TPythonGUIInputOutput;
     mmo2: TRichEdit;
+    lbl8: TLabel;
+    lbl9: TLabel;
     procedure FormActivate(Sender: TObject);
     procedure btngetoffersClick(Sender: TObject);
     procedure btnhelpClick(Sender: TObject);
@@ -77,6 +79,9 @@ type
     procedure Exit1Click(Sender: TObject);
     procedure btncheckbuyboxClick(Sender: TObject);
     procedure tmr1Timer(Sender: TObject);
+    procedure Settings2Click(Sender: TObject);
+    procedure LogABug1Click(Sender: TObject);
+    procedure FeatureRequest1Click(Sender: TObject);
   private
     { Private declarations }
 
@@ -304,7 +309,7 @@ begin
           // Extract PLID from the offer_url
           PLID := ExtractAfter(ProductObject.GetValue('offer_url').Value, 'PLID');
           mmobuyboxoutput.Lines.Add('PLID: ' + PLID.Trim);
-          //PlidStore.Add(PLID.Trim);
+          PlidStore.Add(PLID.Trim);
 
           // Add a separator line between products
           mmobuyboxoutput.Lines.Add('--------------------------------------');
@@ -366,6 +371,11 @@ begin
  frmmain.Close;
 end;
 
+procedure Tfrmmain.FeatureRequest1Click(Sender: TObject);
+begin
+ frmhelppeompt.btnfeaturereq.Click;
+end;
+
 procedure Tfrmmain.FormActivate(Sender: TObject);
 begin
  //set the path to python folder dynamically at form activate
@@ -388,6 +398,11 @@ begin
 btngetoffers.Click;
 end;
 
+procedure Tfrmmain.LogABug1Click(Sender: TObject);
+begin
+ frmhelppeompt.btnlogabug.Click;
+end;
+
 procedure Tfrmmain.ProcessResults1Click(Sender: TObject);
 begin
  if btnprocess.Enabled = True then
@@ -397,6 +412,11 @@ begin
  begin
    ShowMessage('Please Click Get Offers First !');
  end;
+end;
+
+procedure Tfrmmain.Settings2Click(Sender: TObject);
+begin
+frmsettings.ShowModal;
 end;
 
 procedure Tfrmmain.tmr1Timer(Sender: TObject);

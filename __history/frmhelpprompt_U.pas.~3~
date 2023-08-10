@@ -15,7 +15,6 @@ type
     btnfeaturereq: TButton;
     btnlogabug: TButton;
     procedure btnlogabugClick(Sender: TObject);
-    procedure btnfeaturereqClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -29,14 +28,10 @@ implementation
 
 {$R *.dfm}
 
-procedure Tfrmhelppeompt.btnfeaturereqClick(Sender: TObject);
-begin
- ShellExecute(0, 'open', 'mailto:' + 'dantu.domonique@gmail.com' + '?subject=' + 'Takealot Buy Box Manager , Feature Request !', nil, nil, SW_SHOWNORMAL);
-end;
-
 procedure Tfrmhelppeompt.btnlogabugClick(Sender: TObject);
 begin
- ShellExecute(0, 'open', 'mailto:' + 'dantu.domonique@gmail.com' + '?subject=' + 'Takealot Buy Box Manager , Bug !', nil, nil, SW_SHOWNORMAL);
+   ShellExecute(0, 'open', 'mailto:' + 'dantu.domonique@gmail.com' + '?subject=' + 'Takealot Buy Box Manager , Bug', nil, nil, SW_SHOWNORMAL);
+
 end;
 
 end.
